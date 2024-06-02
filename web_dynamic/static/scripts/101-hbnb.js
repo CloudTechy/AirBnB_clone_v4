@@ -1,3 +1,4 @@
+/* global $ */
 window.addEventListener('load', function () {
   $.ajax('http://127.0.0.1:5001/api/v1/status').done(function (data) {
     if (data.status === 'OK') {
@@ -25,13 +26,13 @@ window.addEventListener('load', function () {
   const cityIds = {};
   $('.locations input[type=checkbox]').click(function () {
     if ($(this).prop('checked')) {
-      if ($(this).attr('data-type') == 'city') {
+      if ($(this).attr('data-type') === 'city') {
         cityIds[$(this).attr('data-id')] = $(this).attr('data-name');
       } else {
         stateIds[$(this).attr('data-id')] = $(this).attr('data-name');
       }
     } else if (!$(this).prop('checked')) {
-      if ($(this).attr('data-type') == 'city') {
+      if ($(this).attr('data-type') === 'city') {
         delete cityIds[$(this).attr('data-id')];
       } else {
         delete stateIds[$(this).attr('data-id')];
@@ -51,20 +52,15 @@ window.addEventListener('load', function () {
     }
   });
 
-  fetch_places();
+  fetchPlaces();
 
   const btn = document.querySelector('button');
   btn.addEventListener('click', () => {
-    fetch_places(cityIds, stateIds, amenityIds);
-  });
-
-  $('div.reviews h2').on('click', () => {
-    this.text(hey);
-    this.alert('hey');
+    fetchPlaces(cityIds, stateIds, amenityIds);
   });
 });
 
-function fetch_places (cityIds = {}, stateIds = {}, amenityIds = {}) {
+function fetchPlaces (cityIds = {}, stateIds = {}, amenityIds = {}) {
   $.ajax({
     type: 'POST',
     url: 'http://127.0.0.1:5001/api/v1/places_search/',
@@ -134,16 +130,16 @@ function fetch_places (cityIds = {}, stateIds = {}, amenityIds = {}) {
   });
 }
 
-function getReviews (e, place_id) {
-  console.log(place_id);
-  $.get(`http://127.0.0.1:5001/api/v1/places/${place_id}/reviews`, (data) => {
-    $(`#${place_id} h2`).html(
-      `${data.length} Reviews <span onclick="getReviews(event, '${place_id}')">show</span>`
+function getReviews (e, placeId) {
+  console.log(placeId);
+  $.get(`http://127.0.0.1:5001/api/v1/places/${placeId}/reviews`, (data) => {
+    $(`#${placeId} h2`).html(
+      `${data.length} Reviews <span onclick="getReviews(event, '${placeId}')">show</span>`
     );
-    $(`#${place_id} ul`).html('');
-    $(`#${place_id} ul`).toggle('hide');
+    $(`#${placeId} ul`).html('');
+    $(`#${placeId} ul`).toggle('hide');
     for (review of data) {
-      $(`#${place_id} ul`).append(
+      $(`#${placeId} ul`).append(
         `
         <li>
           <h3>  the ${review.created_at}</h3>
