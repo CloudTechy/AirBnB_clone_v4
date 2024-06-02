@@ -1,77 +1,77 @@
 /* global $ */
-window.addEventListener('load', function () {
-  $.ajax('http://127.0.0.1:5001/api/v1/status').done(function (data) {
-    if (data.status === 'OK') {
-      $('#api_status').addClass('available');
+window.addEventListener("load", function () {
+  $.ajax("http://0.0.0.0:5001/api/v1/status").done(function (data) {
+    if (data.status === "OK") {
+      $("#api_status").addClass("available");
     } else {
-      $('#api_status').removeClass('available');
+      $("#api_status").removeClass("available");
     }
   });
 
   const amenityIds = {};
-  $('.amenities input[type=checkbox]').click(function () {
-    if ($(this).prop('checked')) {
-      amenityIds[$(this).attr('data-id')] = $(this).attr('data-name');
-    } else if (!$(this).prop('checked')) {
-      delete amenityIds[$(this).attr('data-id')];
+  $(".amenities input[type=checkbox]").click(function () {
+    if ($(this).prop("checked")) {
+      amenityIds[$(this).attr("data-id")] = $(this).attr("data-name");
+    } else if (!$(this).prop("checked")) {
+      delete amenityIds[$(this).attr("data-id")];
     }
     if (Object.keys(amenityIds).length === 0) {
-      $('div.amenities h4').html('&nbsp;');
+      $("div.amenities h4").html("&nbsp;");
     } else {
-      $('div.amenities h4').text(Object.values(amenityIds).join(', '));
+      $("div.amenities h4").text(Object.values(amenityIds).join(", "));
     }
   });
 
   const stateIds = {};
   const cityIds = {};
-  $('.locations input[type=checkbox]').click(function () {
-    if ($(this).prop('checked')) {
-      if ($(this).attr('data-type') == 'city') {
-        cityIds[$(this).attr('data-id')] = $(this).attr('data-name');
+  $(".locations input[type=checkbox]").click(function () {
+    if ($(this).prop("checked")) {
+      if ($(this).attr("data-type") == "city") {
+        cityIds[$(this).attr("data-id")] = $(this).attr("data-name");
       } else {
-        stateIds[$(this).attr('data-id')] = $(this).attr('data-name');
+        stateIds[$(this).attr("data-id")] = $(this).attr("data-name");
       }
-    } else if (!$(this).prop('checked')) {
-      if ($(this).attr('data-type') == 'city') {
-        delete cityIds[$(this).attr('data-id')];
+    } else if (!$(this).prop("checked")) {
+      if ($(this).attr("data-type") == "city") {
+        delete cityIds[$(this).attr("data-id")];
       } else {
-        delete stateIds[$(this).attr('data-id')];
+        delete stateIds[$(this).attr("data-id")];
       }
     }
     if (
       Object.keys(stateIds).length === 0 &&
       Object.keys(cityIds).length === 0
     ) {
-      $('div.locations h4').html('&nbsp;');
+      $("div.locations h4").html("&nbsp;");
     } else {
-      $('div.locations h4').text(Object.values(stateIds).join(', '));
-      const states = $('div.locations h4').text();
-      $('div.locations h4').text(
-        states + (states ? ', ' : '') + Object.values(cityIds).join(', ')
+      $("div.locations h4").text(Object.values(stateIds).join(", "));
+      const states = $("div.locations h4").text();
+      $("div.locations h4").text(
+        states + (states ? ", " : "") + Object.values(cityIds).join(", ")
       );
     }
   });
 
   fetchPlaces();
 
-  const btn = document.querySelector('button');
-  btn.addEventListener('click', () => {
+  const btn = document.querySelector("button");
+  btn.addEventListener("click", () => {
     fetchPlaces(cityIds, stateIds, amenityIds);
   });
 });
 
-function fetchPlaces (cityIds = {}, stateIds = {}, amenityIds = {}) {
+function fetchPlaces(cityIds = {}, stateIds = {}, amenityIds = {}) {
   $.ajax({
-    type: 'POST',
-    url: 'http://127.0.0.1:5001/api/v1/places_search/',
-    contentType: 'application/json',
+    type: "POST",
+    url: "http://0.0.0.0:5001/api/v1/places_search/",
+    contentType: "application/json",
     data: JSON.stringify({
       states: stateIds,
       cities: cityIds,
-      amenities: amenityIds
-    })
+      amenities: amenityIds,
+    }),
   }).done(function (data) {
-    $('section.places').html('');
+    $("section.places").html("");
     for (const place of data) {
       const template = `
       <article>
@@ -118,7 +118,7 @@ function fetchPlaces (cityIds = {}, stateIds = {}, amenityIds = {}) {
         </div>
 
       </article>`;
-      $('section.places').append(template);
+      $("section.places").append(template);
     }
   });
 }
