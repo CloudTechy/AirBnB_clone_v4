@@ -45,7 +45,9 @@ window.addEventListener("load", function () {
     } else {
       $("div.locations h4").text(Object.values(stateIds).join(", "));
       let states = $("div.locations h4").text();
-      $("div.locations h4").text(states + Object.values(cityIds).join(", "));
+      $("div.locations h4").text(
+        states + (states ? ", " : "") + Object.values(cityIds).join(", ")
+      );
     }
   });
 
