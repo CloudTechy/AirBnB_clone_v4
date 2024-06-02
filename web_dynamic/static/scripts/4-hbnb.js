@@ -34,6 +34,7 @@ function fetch_places() {
     contentType: "application/json",
     data: JSON.stringify({}),
   }).done(function (data) {
+    $("section.places").html("");
     for (const place of data) {
       const template = `
       <article>
